@@ -7,7 +7,6 @@
       :permanent="$root.onDesktop"
       :temporary="!$root.onDesktop"
       class="primary"
-      absolute
       dark
       app
     >
@@ -56,13 +55,38 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary" class="hidden-md-and-up" dark>
+    <v-app-bar
+      flat
+      max-height="64"
+      color="grey lighten-5"
+      v-if="$vuetify.breakpoint.mdAndUp"
+    >
+      <v-spacer></v-spacer>
+      <v-toolbar-title class="primary--text font-weight-bold headline">
+        Hack for Good
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-app-bar
+      app
+      flat
+      hide-on-scroll
+      color="primary"
+      class="hidden-md-and-up"
+      dark
+      v-else
+    >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-spacer></v-spacer>
       <v-toolbar-title>Hack for Good</v-toolbar-title>
+      <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-content>
-      <router-view></router-view>
+      <transition :name="$route.meta.transitionName" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </v-content>
   </v-app>
 </template>

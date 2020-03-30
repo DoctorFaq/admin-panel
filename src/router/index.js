@@ -3,20 +3,20 @@ import VueRouter from "vue-router";
 import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/Login.vue";
 
-// Routes
+// Import routes
 import dashboard from "./dashboard";
 
 Vue.use(VueRouter);
 
+// Main routes
 const routes = [
   {
     path: "/",
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem("user") == null) {
-        next({ name: "Login" });
-      } else {
-        next({ name: "Dashboard" });
+        return next({ path: "/login" });
       }
+      return next({ path: "/dashboard" });
     }
   },
   {
@@ -52,13 +52,16 @@ const routes = [
   }
 ];
 
+// VueRouter instance
 const router = new VueRouter({
   routes
 });
 
+// Router before each
 router.beforeEach((to, from, next) => {
-  // Check auth
-  if (to.matched.some(record => record.meta.auth)) {
+  // Check for auth required
+  if (to.matched.some(record => record.meta && record.meta.auth)) {
+    // Authenticate
     if (!localStorage.getItem("user")) {
       Vue.toasted.show("Você precisa entrar para continuar", {
         icon: "mdi-alert-circle-outline",
@@ -73,12 +76,30 @@ router.beforeEach((to, from, next) => {
   }
 
   // Set page title
-  const pageTitle = to.matched
+  const pageWithTitle = to.matched
     .slice()
     .reverse()
-    .find(r => r.meta && r.meta.title).meta.title;
-  if (pageTitle) document.title = `${pageTitle} | Hack for Good`;
+    .find(r => r.meta && r.meta.title);
+  if (pageWithTitle)
+    document.title = `${pageWithTitle.meta.title} | Hack for Good`;
 
+  // Transition name
+  const lastToRoute = to.matched.slice().reverse()[0];
+  if (lastToRoute) {
+    lastToRoute.meta.transitionName = "scroll-y-transition";
+    if (from.matched.length) {
+      const lastFromRoute = from.matched.slice().reverse()[0];
+      const toPathLength = lastToRoute.path.split("/").filter(s => s).length;
+      const fromPathLength = lastFromRoute.path.split("/").filter(s => s)
+        .length;
+
+      if (fromPathLength > toPathLength) {
+        lastToRoute.meta.transitionName = "scroll-y-reverse-transition";
+      }
+    }
+  }
+
+  // Continue
   return next();
 });
 
