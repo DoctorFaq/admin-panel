@@ -14,8 +14,11 @@
           :items-per-page="5"
           @click:row="openItem"
           sort-by="registerDate"
-          class="elevation-1"
+          class="elevation-1 clickable-table"
         >
+          <template v-slot:item.phone="{ item }">
+            {{ item.phone | phoneNumber }}
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -76,4 +79,4 @@ export default {
 };
 </script>
 
-<style type="stylus"></style>
+<style lang="stylus"></style>
