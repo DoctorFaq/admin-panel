@@ -12,6 +12,7 @@
           :headers="request.headers"
           :items="request.items"
           :items-per-page="5"
+          :loading="request.loading"
           @click:row="openItem"
           sort-by="registerDate"
           class="elevation-1 clickable-table"
@@ -26,6 +27,10 @@
 </template>
 
 <script>
+import { User } from "../../services";
+
+console.log(User);
+
 export default {
   name: "Requests",
   data() {
@@ -35,45 +40,30 @@ export default {
           { sortable: false, text: "#", value: "id" },
           { text: "Nome", value: "name" },
           { sortable: false, text: "Telefone", value: "phone" },
-          { sortable: false, text: "CRM", value: "crm" },
-          { text: "Data de Cadastro", value: "registerDate" }
+          { sortable: false, text: "CRM", value: "doctor.crm" },
+          { text: "Data de Cadastro", value: "createdAt" }
         ],
-        items: [
-          {
-            id: 0,
-            name: "Maria do Carmo",
-            phone: "+5554991608363",
-            crm: "102910783",
-            registerDate: "01/01/2020"
-          },
-          {
-            id: 1,
-            name: "João Juca da Jabera",
-            phone: "+5554991608363",
-            crm: "102915183",
-            registerDate: "01/03/2020"
-          },
-          {
-            id: 3,
-            name: "Jamerson Homulo Espadaxin",
-            phone: "+5554991608363",
-            crm: "102919581",
-            registerDate: "02/03/2020"
-          },
-          {
-            id: 10,
-            name: "Alberto Cabrito Cabreiro",
-            phone: "+5554991608363",
-            crm: "102912131",
-            registerDate: "02/02/2019"
-          }
-        ]
+        loading: true,
+        items: []
       }
     };
+  },
+  created() {
+    this.findAll();
   },
   methods: {
     openItem(item) {
       this.$router.push({ name: "ViewRequest", params: { id: item.id } });
+    },
+    findAll() {
+      this.request.loading = true;
+      User.findProfessionals()
+        .then(res => {
+          this.items = res.data || [];
+        })
+        .finally(() => {
+          this.request.loading = false;
+        });
     }
   }
 };
