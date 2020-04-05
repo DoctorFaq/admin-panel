@@ -20,5 +20,21 @@ export default {
     if (val) {
       return moment(String(val)).format("L");
     }
+  },
+
+  /**
+   * Formata CPF
+   * @param {string|number} val
+   */
+  formatCPF(val) {
+    return val;
+  },
+
+  /**
+   * Formata CRM
+   * @param {string} val
+   */
+  formatCRM(val) {
+    return val;
   }
 };

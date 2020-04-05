@@ -124,28 +124,7 @@
 
           <!-- Validated -->
           <template v-slot:item.status="{ item }">
-            <v-chip
-              :color="
-                item.doctor.validated === null
-                  ? 'grey'
-                  : item.doctor.validated
-                  ? 'success'
-                  : 'error'
-              "
-              text-color="white"
-              small
-            >
-              <v-icon left small>
-                {{
-                  item.doctor.validated === null
-                    ? "mdi-help-circle"
-                    : item.doctor.validated
-                    ? "mdi-check-circle"
-                    : "mdi-close-circle"
-                }}
-              </v-icon>
-              {{ item.doctor.validated | status }}
-            </v-chip>
+            <prof-status :value="item.doctor.validated" small></prof-status>
           </template>
           <!-- End Validated -->
         </v-data-table>
@@ -156,11 +135,13 @@
 
 <script>
 import { User } from "../../services";
-
-console.log(User);
+import ProfStatus from "../../components/ProfStatus";
 
 export default {
   name: "Requests",
+  components: {
+    ProfStatus
+  },
   data() {
     return {
       headers: [
@@ -214,13 +195,6 @@ export default {
           (rejected && validated === false)
         );
       });
-    }
-  },
-  filters: {
-    status(status) {
-      if (status === null) return "Pendente";
-      else if (status) return "Aprovado";
-      else return "Reprovado";
     }
   }
 };

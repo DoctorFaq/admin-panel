@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar flat app color="grey lighten-5">
+  <v-app-bar app flat color="grey lighten-4" :hide-on-scroll="!$root.onDesktop">
     <!-- Back Button -->
     <transition name="slide-x-transition" mode="out-in">
       <v-app-bar-nav-icon v-if="!$root.onDesktop" @click="toggleSidebar" />

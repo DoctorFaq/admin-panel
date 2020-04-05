@@ -70,6 +70,9 @@ export default {
   methods: {
     authenticate() {
       if (this.$refs.loginForm.validate()) {
+        /**
+         * Verificar credenciais no banco de dados e autenticar
+         */
         localStorage.setItem("user", this.username);
         this.$router.go({ path: "/dashboard" });
         this.$toast.show("Autenticado com sucesso", { type: "success" });
