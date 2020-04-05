@@ -21,7 +21,7 @@
             <v-divider v-if="card.divider" :key="`pgdiv${i}`"></v-divider>
 
             <!-- Card -->
-            <v-card v-else to="requests" outlined>
+            <v-card v-else :to="card.to" outlined>
               <v-card-title class="primary--text">{{
                 card.title
               }}</v-card-title>

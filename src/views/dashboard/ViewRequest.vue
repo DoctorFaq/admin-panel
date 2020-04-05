@@ -1,13 +1,6 @@
 <template>
   <v-container>
-    <v-toolbar flat>
-      <v-toolbar-title class="headline">
-        <v-btn icon @click="$router.go(-1)"
-          ><v-icon>mdi-arrow-left</v-icon></v-btn
-        >
-        {{ user.name }}
-      </v-toolbar-title>
-    </v-toolbar>
+    <v-toolbar flat> </v-toolbar>
   </v-container>
 </template>
 

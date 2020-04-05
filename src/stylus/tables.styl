@@ -1,3 +1,4 @@
-.clickable-table
-    table > tbody > tr
-        cursor pointer
+.v-data-table
+    &.clickable-table
+        table > tbody > tr:not(^[0]__empty-wrapper)
+            cursor pointer

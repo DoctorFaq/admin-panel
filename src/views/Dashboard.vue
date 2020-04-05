@@ -1,89 +1,28 @@
 <template>
   <v-app dark id="dashboard">
-    <v-navigation-drawer
-      v-model="drawer"
-      :expand-on-hover="$root.onDesktop"
-      :mini-variant="$root.onDesktop"
-      :permanent="$root.onDesktop"
-      :temporary="!$root.onDesktop"
-      class="primary"
-      dark
-      app
-    >
-      <v-list class="py-0">
-        <v-list-item two-line :class="miniVariant && 'px-2'">
-          <v-list-item-avatar>
-            <img src="https://randomuser.me/api/portraits/men/81.jpg" />
-          </v-list-item-avatar>
+    <!-- Main Dashboard Sidebar -->
+    <main-sidebar v-model="drawer" :items="menuItems"></main-sidebar>
 
-          <v-list-item-content>
-            <v-list-item-title>Sample User</v-list-item-title>
-            <v-list-item-subtitle>@username</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-divider></v-divider>
-
-        <template v-for="item in menuItems">
-          <v-divider v-if="item.divider" :key="item.title"></v-divider>
-          <v-list-item v-else :key="item.title" :to="item.path" exact>
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-list>
-
-      <template v-slot:append>
-        <v-list dense>
-          <v-divider></v-divider>
-
-          <v-list-item @click="logout">
-            <v-list-item-icon>
-              <v-icon>mdi-logout-variant</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>Sair</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </template>
-    </v-navigation-drawer>
-
-    <v-app-bar
-      flat
-      max-height="64"
-      color="grey lighten-5"
-      v-if="$vuetify.breakpoint.mdAndUp"
-    >
-      <v-spacer></v-spacer>
-      <v-toolbar-title class="primary--text font-weight-bold headline">
-        Hack for Good
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-app-bar>
-
-    <v-app-bar
-      app
-      flat
-      hide-on-scroll
-      color="primary"
-      class="hidden-md-and-up"
-      dark
-      v-else
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-spacer></v-spacer>
-      <v-toolbar-title>Hack for Good</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-app-bar>
+    <!-- Dashboard App Bar -->
+    <dashboard-app-bar
+      v-bind:back-btn="canGoBack"
+      @click:nav-icon="drawer = !drawer"
+    ></dashboard-app-bar>
 
     <v-content>
+      <!-- Back Button -->
+      <v-toolbar flat dense class="mb-0" v-if="!$root.onDesktop">
+        <v-slide-x-transition>
+          <v-toolbar-title v-if="canGoBack && !$root.onDesktop">
+            <v-btn small depressed color="primary--text" @click="goBack">
+              <v-icon left>mdi-arrow-left</v-icon>
+              Voltar
+            </v-btn>
+          </v-toolbar-title>
+        </v-slide-x-transition>
+      </v-toolbar>
+
+      <!-- Router View -->
       <transition :name="$route.meta.transitionName" mode="out-in">
         <router-view></router-view>
       </transition>
@@ -92,9 +31,15 @@
 </template>
 
 <script>
+import MainSidebar from "../components/MainSidebar";
+import DashboardAppBar from "../components/DashboardAppBar";
+
 export default {
+  name: "Dashboard",
+  components: { MainSidebar, DashboardAppBar },
   data: () => ({
-    drawer: null,
+    drawer: false,
+    canGoBack: false,
     menuItems: [
       {
         title: "Início",
@@ -108,20 +53,23 @@ export default {
       }
     ]
   }),
-  computed: {
-    miniVariant() {
-      return !this.$vuetify.breakpoint.xsOnly;
-    },
-    expandOnHover() {
-      return !this.$vuetify.breakpoint.xsOnly;
+  mounted() {
+    this.checkBackBtn(this.$route);
+  },
+  watch: {
+    ["$route"](to) {
+      this.checkBackBtn(to);
     }
   },
   methods: {
-    goTo(path) {
-      this.$router.push(path);
+    goBack() {
+      this.$router.go(-1);
     },
-    logout() {
-      this.$router.push("/logout");
+    checkBackBtn(to) {
+      this.canGoBack =
+        to &&
+        to.path &&
+        to.path.split("/").filter(p => String(p).trim()).length > 2;
     }
   }
 };

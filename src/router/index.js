@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/Login.vue";
+import NotFound from "../views/NotFound.vue";
 
 // Import routes
 import dashboard from "./dashboard";
@@ -29,6 +30,7 @@ const routes = [
   },
   {
     path: "/logout",
+    name: "Logout",
     meta: {
       title: "Desconectando..."
     },
@@ -49,6 +51,14 @@ const routes = [
       auth: true
     },
     children: dashboard
+  },
+  {
+    path: "*",
+    name: "404",
+    component: NotFound,
+    meta: {
+      title: "Erro 404"
+    }
   }
 ];
 
